@@ -1,0 +1,53 @@
+<table *ngIf="videojuegosTable" class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col">ID videojuego</th>
+      <th scope="col">Nombre</th>
+      <th scope="col">Descripcion</th>
+      <th scope="col">Plataforma</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let videojuego of listaVideoJuegos; index as i">
+      <td>{{ videojuego.idVideojuego }}</td>
+      <td>{{ videojuego.nombre }}</td>
+      <td>{{ videojuego.descripcion }}</td>
+      <td>{{ videojuego.plataforma }}</td>
+    </tr>
+  </tbody>
+</table>
+
+
+<table *ngIf="comentarioTable" class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col">IDComentario</th>
+      <th scope="col">Descripcion</th>
+      <th scope="col">IDVideojuego</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let comentario of listaComentario; index as i">
+      <td>{{ comentario.idComentario }}</td>
+      <td>{{ comentario.descripcion }}</td>
+      <td>{{ comentario.idVideojuego }}</td>
+    </tr>
+  </tbody>
+</table>
+
+<table *ngIf="votacionTable" class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col">IDVotacion</th>
+      <th scope="col">Voto</th>
+      <th scope="col">IDVideojuego</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let votacion of listaVotacion; index as i">
+      <td>{{ votacion.idVotacion }}</td>
+      <td>{{ votacion.voto }}</td>
+      <td>{{ votacion.idVideojuego }}</td>
+    </tr>
+  </tbody>
+</table>

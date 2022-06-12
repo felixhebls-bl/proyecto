@@ -1,0 +1,28 @@
+<nav class="navbar navbar-expand-lg navbar navbar-dark bg-dark">
+  <div class="container-fluid">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo03"
+      aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <!-- <h4 class="text-warning ">Berger-Levrault</h4> -->
+    <img [src]="'assets/berger-levrault.png'" style="width: 7%; height: 5%;">
+    <hr class="collapse navbar-collapse" id="navbarTogglerDemo03">
+    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+      <li class="nav-item">
+        <button class="btn btn-danger mx-2" type="submit" (click)="opcion('videojuego')">Videojuego</button>
+      </li>
+      <li class="nav-item">
+        <button class="btn btn-danger mx-2" type="submit" (click)="opcion('comentario')">Comentario</button>
+      </li>
+      <li class="nav-item">
+        <button class="btn btn-danger mx-2"  type="submit" (click)="opcion('votacion')">Votacion</button>
+      </li>
+    </ul>
+
+  </div>
+
+</nav>
+<div class="progress">
+  <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100"
+    aria-valuemin="0" aria-valuemax="100"></div>
+</div>
