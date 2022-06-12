@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>   
+     
+    <!-- Definición de propiedades y variables -->
+    <springProperty scope="context" name="NOMBRE_APLICACION" source="spring.application.name" defaultValue="Aplicación"/>
+    <springProperty scope="context" name="LOG_FILE_PATH" source="logging.file.path"/>
+    <!-- Para RabbitMQ -->
+    <springProperty scope="context" name="DIRECCIONES_RABBITMQ" source="spring.rabbitmq.addresses" />
+    <springProperty scope="context" name="USUARIO_RABBITMQ" source="spring.rabbitmq.username"/>
+    <springProperty scope="context" name="PASSWORD_RABBITMQ" source="spring.rabbitmq.password"/>
+    <springProperty scope="context" name="VH_RABBITMQ" source="spring.rabbitmq.virtual-host"/>
+    <springProperty scope="context" name="NOMBRE_EXCHANGE" source="bl.log.centralizado.rabbitmq.exchange.name"/>
+    <springProperty scope="context" name="CLAVE_ENRUTADO" source="bl.log.centralizado.rabbitmq.routing.key"/>
+    <!-- Para anadir información al log -->
+    <define name="HOSTNAME" class="com.bl.architecture.athlas.logger.HostnamePropertyDefiner"/>
+    <define name="IP" class="com.bl.architecture.athlas.logger.IPPropertyDefiner"/>
+        
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%black(%d{yyyy-MM-dd HH:mm:ss.SSS}) %blue(%-5level) %red([%thread]) %blue([%logger:%M:%line]) - %msg%n</pattern>
+        </encoder>
+    </appender>  
+ 
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <FileNamePattern>${LOG_FILE_PATH}/${NOMBRE_APLICACION}-%d{dd-MM-yyyy}.%i.log</FileNamePattern>
+            <maxFileSize>25MB</maxFileSize>
+            <totalSizeCap>1GB</totalSizeCap>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <Pattern>%d %p [${NOMBRE_APLICACION},%X{traceId:-NoTraceId},%X{spanId:-NoSpanId}] [${HOSTNAME}:${IP}] [%X{username:-SinUsuario}] %t [%c:%line:%M] - %m %n</Pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+     
+    <appender name="AMQP" class="org.springframework.amqp.rabbit.logback.AmqpAppender">       
+        <layout>           
+            <pattern><![CDATA[ %d %p [${NOMBRE_APLICACION},%X{traceId:-NoTraceId},%X{spanId:-NoSpanId}] [${HOSTNAME}:${IP}] [%X{username:-SinUsuario}] [%t] [%c:%line:%M] - <%m>%n ]]></pattern>       
+        </layout>       
+        <addresses>${DIRECCIONES_RABBITMQ}</addresses>       
+        <username>${USUARIO_RABBITMQ}</username>       
+        <password>${PASSWORD_RABBITMQ}</password>       
+        <exchangeName>${NOMBRE_EXCHANGE}</exchangeName>
+        <exchangeType>direct</exchangeType>       
+        <applicationId>${NOMBRE_APLICACION}</applicationId>
+        <routingKeyPattern>${CLAVE_ENRUTADO}</routingKeyPattern>       
+        <generateId>true</generateId>       
+        <charset>UTF-8</charset>       
+        <durable>true</durable>       
+        <deliveryMode>NON_PERSISTENT</deliveryMode>
+    </appender>
+    
+    <logger name="com.bl.bootcamp.votacion" level="debug" /> 
+     
+    <springProfile name="test | desarrollo | default">
+        <root level="info">
+            <appender-ref ref="CONSOLE" />
+        </root>
+    </springProfile>
+  
+    <springProfile name="integracion | produccion">
+        <root level="info">
+            <appender-ref ref="CONSOLE" />
+            <appender-ref ref="FILE" />
+            <appender-ref ref="AMQP" />
+        </root>
+    </springProfile>
+</configuration>

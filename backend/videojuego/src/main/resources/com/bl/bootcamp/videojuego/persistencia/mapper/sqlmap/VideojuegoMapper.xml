@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bl.bootcamp.videojuego.persistencia.mapper.VideojuegoMapper">
+  <resultMap id="BaseResultMap" type="com.bl.bootcamp.videojuego.persistencia.modelo.VideojuegoBean">
+    <id column="id_videojuego" jdbcType="INTEGER" property="idVideojuego" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.bl.bootcamp.videojuego.persistencia.modelo.VideojuegoBean">
+    <result column="nombre" jdbcType="LONGVARCHAR" property="nombre" />
+    <result column="descripcion" jdbcType="LONGVARCHAR" property="descripcion" />
+    <result column="plataforma" jdbcType="LONGVARCHAR" property="plataforma" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id_videojuego
+  </sql>
+  <sql id="Blob_Column_List">
+    nombre, descripcion, plataforma
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from videojuego
+    where id_videojuego = #{idVideojuego,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from videojuego
+    where id_videojuego = #{idVideojuego,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.bl.bootcamp.videojuego.persistencia.modelo.VideojuegoBean">
+    insert into videojuego (id_videojuego, nombre, descripcion, 
+      plataforma)
+    values (#{idVideojuego,jdbcType=INTEGER}, #{nombre,jdbcType=LONGVARCHAR}, #{descripcion,jdbcType=LONGVARCHAR}, 
+      #{plataforma,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bl.bootcamp.videojuego.persistencia.modelo.VideojuegoBean">
+    insert into videojuego
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="idVideojuego != null">
+        id_videojuego,
+      </if>
+      <if test="nombre != null">
+        nombre,
+      </if>
+      <if test="descripcion != null">
+        descripcion,
+      </if>
+      <if test="plataforma != null">
+        plataforma,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="idVideojuego != null">
+        #{idVideojuego,jdbcType=INTEGER},
+      </if>
+      <if test="nombre != null">
+        #{nombre,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="descripcion != null">
+        #{descripcion,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="plataforma != null">
+        #{plataforma,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bl.bootcamp.videojuego.persistencia.modelo.VideojuegoBean">
+    update videojuego
+    <set>
+      <if test="nombre != null">
+        nombre = #{nombre,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="descripcion != null">
+        descripcion = #{descripcion,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="plataforma != null">
+        plataforma = #{plataforma,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id_videojuego = #{idVideojuego,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.bl.bootcamp.videojuego.persistencia.modelo.VideojuegoBean">
+    update videojuego
+    set nombre = #{nombre,jdbcType=LONGVARCHAR},
+      descripcion = #{descripcion,jdbcType=LONGVARCHAR},
+      plataforma = #{plataforma,jdbcType=LONGVARCHAR}
+    where id_videojuego = #{idVideojuego,jdbcType=INTEGER}
+  </update>
+  <select id="listarVideojuegos" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+  select * from videojuego;
+  </select>
+</mapper>
