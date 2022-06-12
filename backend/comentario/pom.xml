@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.6.6</version>
+		<relativePath />
+		<!-- lookup parent from repository -->
+	</parent>
+	<groupId>com.bl.bootcamp</groupId>
+	<artifactId>comentario</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<name>comentario-svc</name>
+	<properties>
+		<java.version>17</java.version>
+		<spring-cloud.version>2021.0.1</spring-cloud.version>
+		<docker.image.prefix>bl-bootcamp/bootcamp</docker.image.prefix>
+		<athlas.version>1.0</athlas.version>
+		<archetype.version>1.0</archetype.version>
+		<docker.image.name>${env.DOCKER_REGISTRY_URL}/${docker.image.prefix}/${project.artifactId}:${project.version}</docker.image.name>
+		<paketo.buildpacks.certificates.version>3.0.2</paketo.buildpacks.certificates.version>
+		<paketo.buildpacks.adoptium.version>10.0.4</paketo.buildpacks.adoptium.version>
+		<paketo.buildpacks.java.version>6.8.1</paketo.buildpacks.java.version>
+		<springdoc.version>1.6.6</springdoc.version>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.mybatis.spring.boot</groupId>
+			<artifactId>mybatis-spring-boot-starter</artifactId>
+			<version>2.2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- BLConfig - Configuración centralizada -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-bootstrap</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-config</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-consul-discovery</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+
+		<!-- Trazabilizad distribuida -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-sleuth</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-sleuth-zipkin</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-amqp</artifactId>
+		</dependency>
+
+		<!-- Traza de logs -->
+		<dependency>
+			<groupId>com.bl.architecture.athlas</groupId>
+			<artifactId>athlas-log</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+
+		<!-- Swagger - documentacion API -->
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-webmvc-core</artifactId>
+			<version>${springdoc.version}</version>
+		</dependency>
+
+	</dependencies>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>${spring-cloud.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<profiles>
+		<profile>
+			<id>desarrollo</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<basedirWSL>/mnt/C/bl-gitlab/${projectFolder}</basedirWSL>
+				<docker.image.publish>false</docker.image.publish>
+				<env.DOCKER_REGISTRY_USER>bl-athlas.reader@bl-docker-registry.com</env.DOCKER_REGISTRY_USER>
+				<env.DOCKER_REGISTRY_PASSWORD>xX2i`xcbc&amp;c130sv6Kio</env.DOCKER_REGISTRY_PASSWORD>
+				<env.DOCKER_REGISTRY_URL>registry.forge.berger-levrault.com</env.DOCKER_REGISTRY_URL>
+			</properties>
+		</profile>
+		<profile>
+			<id>integracion</id>
+			<properties>
+				<basedirWSL>${basedir}</basedirWSL>
+				<docker.image.publish>true</docker.image.publish>
+			</properties>
+		</profile>
+	</profiles>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.mybatis.generator</groupId>
+				<artifactId>mybatis-generator-maven-plugin</artifactId>
+				<version>1.4.0</version>
+				<dependencies>
+					<dependency>
+						<groupId>mysql</groupId>
+						<artifactId>mysql-connector-java</artifactId>
+						<version>8.0.29</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>build-info</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<additionalProperties>
+						<athlas.architecture.version>${athlas.version}</athlas.architecture.version>
+						<athlas.architecture.archetype.version>${archetype.version}</athlas.architecture.archetype.version>
+						<athlas.architecture.paketo.certificates.version>${paketo.buildpacks.certificates.version}</athlas.architecture.paketo.certificates.version>
+						<athlas.architecture.paketo.adoptium.version>${paketo.buildpacks.adoptium.version}</athlas.architecture.paketo.adoptium.version>
+						<athlas.architecture.paketo.java.version>${paketo.buildpacks.java.version}</athlas.architecture.paketo.java.version>
+						<athlas.spring-cloud.version>${spring-cloud.version}</athlas.spring-cloud.version>
+						<athlas.spring-boot.version>${project.parent.version}</athlas.spring-boot.version>
+						<athlas.docker.image.name>${docker.image.name}</athlas.docker.image.name>
+					</additionalProperties>
+					<docker>
+						<host>${env.DOCKER_HOSTNAME}</host>
+						<publishRegistry>
+							<username>${env.DOCKER_REGISTRY_USER}</username>
+							<password>${env.DOCKER_REGISTRY_PASSWORD}</password>
+							<url>${env.DOCKER_REGISTRY_URL}</url>
+						</publishRegistry>
+					</docker>
+					<image>
+						<env>
+							<JAVA_TOOL_OPTIONS>-Xlog:async</JAVA_TOOL_OPTIONS>
+						</env>
+						<builder>paketobuildpacks/builder:base</builder>
+						<buildpacks>
+							<buildpack>gcr.io/paketo-buildpacks/ca-certificates:${paketo.buildpacks.certificates.version}</buildpack>
+							<buildpack>gcr.io/paketo-buildpacks/adoptium:${paketo.buildpacks.adoptium.version}</buildpack>
+							<buildpack>gcr.io/paketo-buildpacks/java:${paketo.buildpacks.java.version}</buildpack>
+						</buildpacks>
+						<pullPolicy>IF_NOT_PRESENT</pullPolicy>
+						<cleanCache>true</cleanCache>
+						<name>${docker.image.name}</name>
+						<publish>${docker.image.publish}</publish>
+						<bindings>${basedirWSL}/bindings/ca-certificates:/platform/bindings/ca-certificates</bindings>
+					</image>
+					<excludes>
+						<exclude>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+						</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
+
+
+

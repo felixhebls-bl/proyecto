@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bl.bootcamp.comentario.persistencia.mapper.ComentarioMapper">
+  <resultMap id="BaseResultMap" type="com.bl.bootcamp.comentario.persistencia.modelo.ComentarioBean">
+    <id column="id_comentario" jdbcType="INTEGER" property="idComentario" />
+    <result column="id_videojuego" jdbcType="INTEGER" property="idVideojuego" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.bl.bootcamp.comentario.persistencia.modelo.ComentarioBean">
+    <result column="descipcion" jdbcType="LONGVARCHAR" property="descipcion" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id_comentario, id_videojuego
+  </sql>
+  <sql id="Blob_Column_List">
+    descipcion
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from comentario
+    where id_comentario = #{idComentario,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from comentario
+    where id_comentario = #{idComentario,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.bl.bootcamp.comentario.persistencia.modelo.ComentarioBean">
+    insert into comentario (id_comentario, id_videojuego, descipcion
+      )
+    values (#{idComentario,jdbcType=INTEGER}, #{idVideojuego,jdbcType=INTEGER}, #{descipcion,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.bl.bootcamp.comentario.persistencia.modelo.ComentarioBean">
+    insert into comentario
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="idComentario != null">
+        id_comentario,
+      </if>
+      <if test="idVideojuego != null">
+        id_videojuego,
+      </if>
+      <if test="descipcion != null">
+        descipcion,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="idComentario != null">
+        #{idComentario,jdbcType=INTEGER},
+      </if>
+      <if test="idVideojuego != null">
+        #{idVideojuego,jdbcType=INTEGER},
+      </if>
+      <if test="descipcion != null">
+        #{descipcion,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bl.bootcamp.comentario.persistencia.modelo.ComentarioBean">
+    update comentario
+    <set>
+      <if test="idVideojuego != null">
+        id_videojuego = #{idVideojuego,jdbcType=INTEGER},
+      </if>
+      <if test="descipcion != null">
+        descipcion = #{descipcion,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id_comentario = #{idComentario,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.bl.bootcamp.comentario.persistencia.modelo.ComentarioBean">
+    update comentario
+    set id_videojuego = #{idVideojuego,jdbcType=INTEGER},
+      descipcion = #{descipcion,jdbcType=LONGVARCHAR}
+    where id_comentario = #{idComentario,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bl.bootcamp.comentario.persistencia.modelo.ComentarioBean">
+    update comentario
+    set id_videojuego = #{idVideojuego,jdbcType=INTEGER}
+    where id_comentario = #{idComentario,jdbcType=INTEGER}
+  </update>
+</mapper>
